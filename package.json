@@ -1,8 +1,8 @@
 {
-  "name": "panteon",
-  "version": "0.0.1",
-  "description": "Вёрстка макета лендинга о колонизации Марса",
-  "repository": "https://github.com/glevanov/panteon.git",
+  "name": "gulp-boilerplate",
+  "version": "0.1.0",
+  "description": "Заготовка под вёрстку на gulp",
+  "repository": "https://github.com/glevanov/gulp-boilerplate.git",
   "author": "Grigoriy Levanov <glevanov@gmail.com>",
   "license": "MIT",
   "scripts": {
