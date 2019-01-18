@@ -8,6 +8,26 @@ var server = require('browser-sync').create()
 var imagemin = require('gulp-imagemin')
 var webp = require('gulp-webp')
 var del = require('del')
+var pug = require('gulp-pug')
+var rollup = require('gulp-better-rollup')
+var sourcemaps = require('gulp-sourcemaps')
+var babel = require('rollup-plugin-babel')
+
+gulp.task('js', function () {
+  return gulp.src('src/index.js')
+    .pipe(plumber())
+    .pipe(sourcemaps.init())
+    .pipe(rollup(
+      {plugins: [babel({
+          presets: [
+            ["@babel/preset-env"]
+          ]
+        })]},
+      {format: 'iife',}
+    ))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest('dist/'))
+})
 
 gulp.task('css', function () {
   return gulp.src('src/sass/style.scss')
@@ -22,7 +42,8 @@ gulp.task('css', function () {
 })
 
 gulp.task('html', function () {
-  return gulp.src('src/*.html')
+  return gulp.src('src/*.pug')
+    .pipe(pug())
     .pipe(gulp.dest('dist'))
 })
 
@@ -35,20 +56,21 @@ gulp.task('server', function () {
   server.init({
     server: 'dist/',
     notify: false,
-    open: true,
+    open: false,
     cors: true,
     ui: false
   })
 
   gulp.watch('src/sass/**/*.scss', gulp.series('css', 'reload'))
-  gulp.watch('src/*.html', gulp.series('html', 'reload'))
+  gulp.watch('src/**/*.pug', gulp.series('html', 'reload'))
+  gulp.watch('src/**/*.js', gulp.series('js', 'reload'))
+  gulp.watch('src/img/**.*', gulp.series('build', 'reload'))
 })
 
 gulp.task('copy', function () {
   return gulp.src([
-      'src/fonts/**.*.{woff,woff2}',
-      'src/img/**',
-      'src/js/**'
+      'src/fonts/**/*.{woff,woff2,eot,ttf,svg}',
+      'src/img/**'
     ],
     {
       base: 'src'
@@ -64,7 +86,8 @@ gulp.task('build', gulp.series(
   'clean',
   'copy',
   'css',
-  'html'
+  'html',
+  'js'
 ))
 
 gulp.task('start', gulp.series('build', 'server'))
@@ -82,7 +105,7 @@ gulp.task('imagemin', function () {
 gulp.task('webp', function () {
   return gulp.src('src/img/**/*.{png,jpg}')
     .pipe(webp({quality: 90}))
-    .pipe(gulp.dest('src/'))
+    .pipe(gulp.dest('src/img'))
 })
 
 gulp.task('images', gulp.series([
