@@ -9,6 +9,7 @@ var imagemin = require('gulp-imagemin')
 var webp = require('gulp-webp')
 var del = require('del')
 var pug = require('gulp-pug')
+var htmlmin = require('gulp-htmlmin')
 var rollup = require('gulp-better-rollup')
 var sourcemaps = require('gulp-sourcemaps')
 var babel = require('rollup-plugin-babel')
@@ -18,11 +19,13 @@ gulp.task('js', function () {
     .pipe(plumber())
     .pipe(sourcemaps.init())
     .pipe(rollup(
-      {plugins: [babel({
+      {
+        plugins: [babel({
           presets: [
             ["@babel/preset-env"]
           ]
-        })]},
+        })]
+      },
       {format: 'iife',}
     ))
     .pipe(sourcemaps.write())
@@ -44,6 +47,7 @@ gulp.task('css', function () {
 gulp.task('html', function () {
   return gulp.src('src/*.pug')
     .pipe(pug())
+    .pipe(htmlmin({ collapseWhitespace: true }))
     .pipe(gulp.dest('dist'))
 })
 
