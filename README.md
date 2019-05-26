@@ -25,7 +25,6 @@ Folder structure is designed around grouping assets by technology rather then by
 | ```build``` | build bundle for production
 | ```gh-pages``` | build & deploy to GitHub Pages
 | ```test``` | run tests
-| ```images``` | minify images & make WebP versions
 
 # Todo
 * add ESlint
